@@ -15,26 +15,24 @@ type alias Model =
     { tags : List String
     , selectedTag : String
 
-    {- 👉 TODO: change this `allArticles` annotation to the following:
-
-        allArticles : List Article
-
-
-       💡 HINT: You'll need to move the existing annotation to a `type alias`.
+    {- Removed Article type annotation and created down below 
     -}
-    , allArticles :
-        List
-            { title : String
-            , description : String
-            , body : String
-            , tags : List String
-            , slug : String
-            }
+    , allArticles : List Article
+    }
+
+    -- Created type alias Article so allArticles can be a List of Articles
+type alias Article =
+    { title : String
+    , description : String
+    , body : String
+    , tags : List String
+    , slug : String
     }
 
 
-{-| 👉 TODO: Replace this comment with a type annotation for `initialModel`
+{-| No Arugments only returns a Model?
 -}
+initialModel : Model
 initialModel =
     { tags = Article.tags
     , selectedTag = "elm"
@@ -51,9 +49,10 @@ type alias Msg =
     , data : String
     }
 
-
-{-| 👉 TODO: Replace this comment with a type annotation for `update`
+{-| takes a Msg alias { description : String, data : String } 
+Returns function that updates model if msg.description == "ClickedTag" or returns the existing model
 -}
+update : Msg -> Model -> Model
 update msg model =
     if msg.description == "ClickedTag" then
         { model | selectedTag = msg.data }
@@ -66,8 +65,9 @@ update msg model =
 -- VIEW
 
 
-{-| 👉 TODO: Replace this comment with a type annotation for `view`
+{-| View takes in a model and returns the DOMs? Html Msg? 
 -}
+view : Model -> Html Msg
 view model =
     let
         articles =
@@ -93,8 +93,9 @@ view model =
         ]
 
 
-{-| 👉 TODO: Replace this comment with a type annotation for `viewArticle`
+{-| viewArticle takes in an Article and returns Html Msg/Dom/Html formatting etc
 -}
+viewArticle : Article -> Html Msg
 viewArticle article =
     div [ class "article-preview" ]
         [ h1 [] [ text article.title ]
@@ -103,8 +104,9 @@ viewArticle article =
         ]
 
 
-{-| 👉 TODO: Replace this comment with a type annotation for `viewBanner`
+{-| Doesn't take any arugments? Only returns Html Msg?
 -}
+viewBanner : Html Msg
 viewBanner =
     div [ class "banner" ]
         [ div [ class "container" ]
@@ -114,8 +116,16 @@ viewBanner =
         ]
 
 
-{-| 👉 TODO: Replace this comment with a type annotation for `viewTag`
+{-| Trying to figure out what arguments this function takes and returns It starts off with an Article and assigns a tag value of either selected or default
+There are multiple ways of doing this it can also be 
+viewTag : String -> String -> Html Msg
+viewTag selectedTagName tagName
+or 
+viewTag : { selectedTagName String -> tagName String } -> Html Msg
+viewTag { selectedTagName tagName } =
+What's ideal in this situation???
 -}
+viewTag : String -> String -> Html { description : String, data : String }
 viewTag selectedTagName tagName =
     let
         otherClass =

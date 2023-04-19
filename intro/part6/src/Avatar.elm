@@ -5,6 +5,7 @@ import Html exposing (Attribute)
 import Html.Attributes
 import Json.Decode as Decode exposing (Decoder)
 import Json.Encode as Encode exposing (Value)
+import Url exposing (Url)
 
 
 
@@ -45,7 +46,12 @@ resolveAvatarUrl maybeUrl =
 
           https://static.productionready.io/images/smiley-cyrus.jpg
     -}
-    ""
+    case maybeUrl of
+        Just url ->
+            url
+
+        Nothing ->
+            "https://static.productionready.io/images/smiley-cyrus.jpg"
 
 
 encode : Avatar -> Value
