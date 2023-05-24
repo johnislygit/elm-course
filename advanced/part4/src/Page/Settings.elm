@@ -15,7 +15,7 @@ import Json.Encode as Encode
 import Profile exposing (Profile)
 import Route
 import Session exposing (Session)
-import Username as Username exposing (Username)
+import Username exposing (Username)
 import Viewer exposing (Viewer)
 import Viewer.Cred as Cred exposing (Cred)
 
@@ -98,10 +98,6 @@ type ValidForm
 
 view : Model -> { title : String, content : Html Msg }
 view model =
-    let
-        form =
-            viewForm model
-    in
     { title = "Settings"
     , content =
         case Session.cred model.session of
@@ -113,7 +109,7 @@ view model =
                                 [ h1 [ class "text-xs-center" ] [ text "Your Settings" ]
                                 , ul [ class "error-messages" ]
                                     (List.map viewProblem model.problems)
-                                , form
+                                , viewForm model.form cred
                                 ]
                             ]
                         ]
@@ -124,74 +120,62 @@ view model =
     }
 
 
-{-| 👉 TODO refactor this to accept narrower types than the entire Model.
-💡 HINT: It may end up with multiple arguments!
--}
-viewForm : Model -> Html Msg
-viewForm model =
-    let
-        form =
-            model.form
-    in
-    case Session.cred model.session of
-        Nothing ->
-            text ""
-
-        Just cred ->
-            Html.form [ onSubmit (SubmittedForm cred) ]
-                [ fieldset []
-                    [ fieldset [ class "form-group" ]
-                        [ input
-                            [ class "form-control"
-                            , placeholder "URL of profile picture"
-                            , value form.avatar
-                            , onInput EnteredAvatar
-                            ]
-                            []
-                        ]
-                    , fieldset [ class "form-group" ]
-                        [ input
-                            [ class "form-control form-control-lg"
-                            , placeholder "Username"
-                            , value form.username
-                            , onInput EnteredUsername
-                            ]
-                            []
-                        ]
-                    , fieldset [ class "form-group" ]
-                        [ textarea
-                            [ class "form-control form-control-lg"
-                            , placeholder "Short bio about you"
-                            , attribute "rows" "8"
-                            , value form.bio
-                            , onInput EnteredBio
-                            ]
-                            []
-                        ]
-                    , fieldset [ class "form-group" ]
-                        [ input
-                            [ class "form-control form-control-lg"
-                            , placeholder "Email"
-                            , value form.email
-                            , onInput EnteredEmail
-                            ]
-                            []
-                        ]
-                    , fieldset [ class "form-group" ]
-                        [ input
-                            [ class "form-control form-control-lg"
-                            , type_ "password"
-                            , placeholder "Password"
-                            , value form.password
-                            , onInput EnteredPassword
-                            ]
-                            []
-                        ]
-                    , button
-                        [ class "btn btn-lg btn-primary pull-xs-right" ]
-                        [ text "Update Settings" ]
+viewForm : Form -> Cred -> Html Msg
+viewForm form cred =
+    Html.form [ onSubmit (SubmittedForm cred) ]
+        [ fieldset []
+            [ fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control"
+                    , placeholder "URL of profile picture"
+                    , value form.avatar
+                    , onInput EnteredAvatar
                     ]
+                    []
                 ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control form-control-lg"
+                    , placeholder "Username"
+                    , value form.username
+                    , onInput EnteredUsername
+                    ]
+                    []
+                ]
+            , fieldset [ class "form-group" ]
+                [ textarea
+                    [ class "form-control form-control-lg"
+                    , placeholder "Short bio about you"
+                    , attribute "rows" "8"
+                    , value form.bio
+                    , onInput EnteredBio
+                    ]
+                    []
+                ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control form-control-lg"
+                    , placeholder "Email"
+                    , value form.email
+                    , onInput EnteredEmail
+                    ]
+                    []
+                ]
+            , fieldset [ class "form-group" ]
+                [ input
+                    [ class "form-control form-control-lg"
+                    , type_ "password"
+                    , placeholder "Password"
+                    , value form.password
+                    , onInput EnteredPassword
+                    ]
+                    []
+                ]
+            , button
+                [ class "btn btn-lg btn-primary pull-xs-right" ]
+                [ text "Update Settings" ]
+            ]
+        ]
 
 
 viewProblem : Problem -> Html msg
